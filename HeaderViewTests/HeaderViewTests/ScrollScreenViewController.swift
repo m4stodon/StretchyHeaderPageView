@@ -88,25 +88,33 @@ class ScrollScreenViewController: UIViewController, UIPageViewControllerDataSour
                 }
             }
         }
-        
         previousScrollOffset = scrollView.contentOffset.y
     }
     
+    var needToAdjustHeight: Bool = false
+    
     func scrollViewWillEndDragging(pageIndex: Int, scrollView: UIScrollView, velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let threshhold: CGFloat = 0.0
-        if targetContentOffset.pointee.y > threshhold {
-            // on end decelerating
-            // open or hide header
-            // dependently of target content offset
+        let threshhold: CGFloat = -200.0
+        
+        if targetContentOffset.pointee.y < threshhold {
+            targetContentOffset.pointee.y = -304
+        } else {
+            if tabsTopOffset.constant != 44.0 {
+                targetContentOffset.pointee.y = -80
+            }
         }
     }
     
     func scrollViewDidEndDragging(pageIndex: Int, scrollView: UIScrollView) {
-        // Do i need?
     }
     
     func scrollViewDidEndDecelerating(pageIndex: Int, scrollView: UIScrollView) {
-        // Do i need?
+        if scrollView.contentOffset.y > -200 && tabsTopOffset.constant > 44 {
+            tabsTopOffset.constant = 44
+            UIView.animate(withDuration: 0.2, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
     }
     
     ////////////////
